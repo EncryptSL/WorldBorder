@@ -4,12 +4,12 @@
 
 package com.wimbli.WorldBorder.UUID;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+import java.util.UUID;
 
 
 public class UUIDTypeAdapter extends TypeAdapter<UUID> {

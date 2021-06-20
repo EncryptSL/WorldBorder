@@ -1,11 +1,11 @@
 package com.wimbli.WorldBorder.cmd;
 
-import java.util.List;
-
-import org.bukkit.command.*;
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.Config;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.wimbli.WorldBorder.*;
+import java.util.List;
 
 
 public class CmdWshape extends WBCmd
@@ -33,7 +33,7 @@ public class CmdWshape extends WBCmd
 			return;
 		}
 
-		String shapeName = "";
+		String shapeName;
 
 		// world and shape specified
 		if (params.size() == 2)

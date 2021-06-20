@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-
 public class BlockPlaceListener implements Listener 
 {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -16,7 +15,7 @@ public class BlockPlaceListener implements Listener
 	{
 		Location loc = event.getBlockPlaced().getLocation();
 		if (loc == null) return;
-	
+
 		World world = loc.getWorld();
 		if (world == null) return;
 		BorderData border = Config.Border(world.getName());

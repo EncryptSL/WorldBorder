@@ -1,8 +1,8 @@
 package com.wimbli.WorldBorder.Events;
 
+import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.World;
 
 /**
  * Created by timafh on 04.09.2015.
@@ -10,8 +10,8 @@ import org.bukkit.World;
 public class WorldBorderFillFinishedEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
-	private World world;
-	private long totalChunks;
+	private final World world;
+	private final long totalChunks;
 
 	public WorldBorderFillFinishedEvent(World world, long totalChunks)
 	{

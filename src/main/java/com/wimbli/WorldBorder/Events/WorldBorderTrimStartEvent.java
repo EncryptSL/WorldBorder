@@ -1,9 +1,8 @@
 package com.wimbli.WorldBorder.Events;
 
+import com.wimbli.WorldBorder.WorldTrimTask;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.wimbli.WorldBorder.WorldTrimTask;
 
 
 /**
@@ -12,7 +11,7 @@ import com.wimbli.WorldBorder.WorldTrimTask;
 public class WorldBorderTrimStartEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
-	private WorldTrimTask trimTask;
+	private final WorldTrimTask trimTask;
 
 	public WorldBorderTrimStartEvent(WorldTrimTask trimTask)
 	{

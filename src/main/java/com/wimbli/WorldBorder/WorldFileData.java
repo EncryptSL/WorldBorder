@@ -1,32 +1,27 @@
 package com.wimbli.WorldBorder;
 
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
 import java.nio.IntBuffer;
 import java.util.List;
-import java.util.Map;
-
-import org.bukkit.entity.Player;
-import org.bukkit.World;
-
-// image output stuff, for debugging method at bottom of this file
-import java.awt.*;
-import java.awt.image.*;
-import javax.imageio.*;
+import java.util.*;
 
 
 // by the way, this region file handler was created based on the divulged region file format: http://mojang.com/2011/02/16/minecraft-save-file-format-in-beta-1-3/
 
 public class WorldFileData
 {
-	private transient World world;
+	private final transient World world;
 	private transient File regionFolder = null;
 	private transient File[] regionFiles = null;
-	private transient Player notifyPlayer = null;
-	private transient Map<CoordXZ, List<Boolean>> regionChunkExistence = Collections.synchronizedMap(new HashMap<CoordXZ, List<Boolean>>());
+	private transient Player notifyPlayer;
+	private final transient Map<CoordXZ, List<Boolean>> regionChunkExistence = Collections.synchronizedMap(new HashMap<CoordXZ, List<Boolean>>());
 
 	// Use this static method to create a new instance of this class. If null is returned, there was a problem so any process relying on this should be cancelled.
 	public static WorldFileData create(World world, Player notifyPlayer)
@@ -293,7 +288,7 @@ public class WorldFileData
 		{
 			for (int z = 0; z < 32; z++)
 			{
-				if (data.get(current).booleanValue())
+				if (data.get(current))
 					g2.fillRect(x,z, x+1, z+1);
 				current++;
 			}

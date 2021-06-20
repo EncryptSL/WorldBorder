@@ -1,5 +1,12 @@
 package com.wimbli.WorldBorder;
 
+import com.wimbli.WorldBorder.Events.WorldBorderTrimFinishedEvent;
+import com.wimbli.WorldBorder.Events.WorldBorderTrimStartEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,35 +14,27 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.Server;
-import org.bukkit.World;
-
-import com.wimbli.WorldBorder.Events.WorldBorderTrimFinishedEvent;
-import com.wimbli.WorldBorder.Events.WorldBorderTrimStartEvent;
-
 
 public class WorldTrimTask implements Runnable
 {
 	// general task-related reference data
-	private transient Server server = null;
-	private transient World world = null;
+	private transient Server server;
+	private transient World world;
 	private transient WorldFileData worldData = null;
 	private transient BorderData border = null;
 	private transient boolean readyToGo = false;
 	private transient boolean paused = false;
 	private transient int taskID = -1;
-	private transient Player notifyPlayer = null;
-	private transient int chunksPerRun = 1;
+	private transient Player notifyPlayer;
+	private transient int chunksPerRun;
 	
 	// values for what chunk in the current region we're at
 	private transient int currentRegion = -1;  // region(file) we're at in regionFiles
 	private transient int regionX = 0;  // X location value of the current region
 	private transient int regionZ = 0;  // X location value of the current region
 	private transient int currentChunk = 0;  // chunk we've reached in the current region (regionChunks)
-	private transient List<CoordXZ> regionChunks = new ArrayList<CoordXZ>(1024);
-	private transient List<CoordXZ> trimChunks = new ArrayList<CoordXZ>(1024);
+	private transient List<CoordXZ> regionChunks = new ArrayList<>(1024);
+	private transient List<CoordXZ> trimChunks = new ArrayList<>(1024);
 	private transient int counter = 0;
 
 	// for reporting progress back to user occasionally
@@ -192,8 +191,8 @@ public class WorldTrimTask implements Runnable
 		reportTotal = currentRegion * 3072;
 		currentRegion++;
 		regionX = regionZ = currentChunk = 0;
-		regionChunks = new ArrayList<CoordXZ>(1024);
-		trimChunks = new ArrayList<CoordXZ>(1024);
+		regionChunks = new ArrayList<>(1024);
+		trimChunks = new ArrayList<>(1024);
 
 		// have we already handled all region files?
 		if (currentRegion >= worldData.regionFileCount())
@@ -295,7 +294,7 @@ public class WorldTrimTask implements Runnable
 		// since our stored chunk positions are based on world, we need to offset those to positions in the region file
 		int offsetX = CoordXZ.regionToChunk(regionX);
 		int offsetZ = CoordXZ.regionToChunk(regionZ);
-		long wipePos = 0;
+		long wipePos;
 		int chunkCount = 0;
 
 		try
@@ -309,7 +308,7 @@ public class WorldTrimTask implements Runnable
 
 				// wipe this extraneous chunk's pointer... note that this method isn't perfect since the actual chunk data is left orphaned,
 				// but Minecraft will overwrite the orphaned data sector if/when another chunk is created in the region, so it's not so bad
-				wipePos = 4 * ((wipe.x - offsetX) + ((wipe.z - offsetZ) * 32));
+				wipePos = 4 * ((wipe.x - offsetX) + ((wipe.z - offsetZ) * 32L));
 				unChunk.seek(wipePos);
 				unChunk.writeInt(0);
 				chunkCount++;

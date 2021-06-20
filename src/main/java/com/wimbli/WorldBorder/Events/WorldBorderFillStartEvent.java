@@ -1,9 +1,8 @@
 package com.wimbli.WorldBorder.Events;
 
+import com.wimbli.WorldBorder.WorldFillTask;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.wimbli.WorldBorder.WorldFillTask;
 
 
 /**
@@ -12,7 +11,7 @@ import com.wimbli.WorldBorder.WorldFillTask;
 public class WorldBorderFillStartEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
-	private WorldFillTask fillTask;
+	private final WorldFillTask fillTask;
 
 	public WorldBorderFillStartEvent(WorldFillTask worldFillTask)
 	{

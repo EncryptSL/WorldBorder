@@ -1,42 +1,40 @@
 package com.wimbli.WorldBorder;
 
-import java.util.concurrent.CompletableFuture;
+import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
+import com.wimbli.WorldBorder.Events.WorldBorderFillStartEvent;
+import io.papermc.lib.PaperLib;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
-import org.bukkit.Server;
-import org.bukkit.World;
-
-import io.papermc.lib.PaperLib;
-
-import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
-import com.wimbli.WorldBorder.Events.WorldBorderFillStartEvent;
+import java.util.concurrent.CompletableFuture;
 
 
 public class WorldFillTask implements Runnable
 {
 	// general task-related reference data
-	private transient Server server = null;
-	private transient World world = null;
+	private transient Server server;
+	private transient World world;
 	private transient BorderData border = null;
 	private transient WorldFileData worldData = null;
 	private transient boolean readyToGo = false;
 	private transient boolean paused = false;
 	private transient boolean pausedForMemory = false;
 	private transient int taskID = -1;
-	private transient Player notifyPlayer = null;
-	private transient int chunksPerRun = 1;
+	private final transient Player notifyPlayer;
+	private final transient int chunksPerRun;
 	private transient boolean continueNotice = false;
-	private transient boolean forceLoad = false;
+	private final transient boolean forceLoad;
 	
 	// these are only stored for saving task to config
-	private transient int fillDistance = 208;
-	private transient int tickFrequency = 1;
+	private final transient int fillDistance;
+	private final transient int tickFrequency;
 	private transient int refX = 0, lastLegX = 0;
 	private transient int refZ = 0, lastLegZ = 0;
 	private transient int refLength = -1;
@@ -50,7 +48,7 @@ public class WorldFillTask implements Runnable
 	private transient int length = -1;
 	private transient int current = 0;
 	private transient boolean insideBorder = true;
-	private transient CoordXZ lastChunk = new CoordXZ(0, 0);
+	private final transient CoordXZ lastChunk = new CoordXZ(0, 0);
 
 	// for reporting progress back to user occasionally
 	private transient long lastReport = Config.Now();
@@ -67,7 +65,7 @@ public class WorldFillTask implements Runnable
 	// several others.
 	private transient Set<UnloadDependency> preventUnload;
 	
-	private class UnloadDependency
+	private static class UnloadDependency
 	{
 		int neededX, neededZ;
 		int forX, forZ;
@@ -151,7 +149,7 @@ public class WorldFillTask implements Runnable
 
 		int chunkWidthX = (int) Math.ceil((double)((border.getRadiusX() + 16) * 2) / 16);
 		int chunkWidthZ = (int) Math.ceil((double)((border.getRadiusZ() + 16) * 2) / 16);
-		int biggerWidth = (chunkWidthX > chunkWidthZ) ? chunkWidthX : chunkWidthZ; //We need to calculate the reportTarget with the bigger width, since the spiral will only stop if it has a size of biggerWidth x biggerWidth
+		int biggerWidth = Math.max(chunkWidthX, chunkWidthZ); //We need to calculate the reportTarget with the bigger width, since the spiral will only stop if it has a size of biggerWidth x biggerWidth
 		this.reportTarget = (biggerWidth * biggerWidth) + biggerWidth + 1;
 
 		//This would be another way to calculate reportTarget, it assumes that we don't need time to check if the chunk is outside and then skip it (it calculates the area of the rectangle/ellipse)
@@ -523,7 +521,7 @@ public class WorldFillTask implements Runnable
 		reportNum = 0;
 
 		// go ahead and save world to disk every 30 seconds or so by default, just in case; can take a couple of seconds or more, so we don't want to run it too often
-		if (Config.FillAutosaveFrequency() > 0 && lastAutosave + (Config.FillAutosaveFrequency() * 1000) < lastReport)
+		if (Config.FillAutosaveFrequency() > 0 && lastAutosave + (Config.FillAutosaveFrequency() * 1000L) < lastReport)
 		{
 			lastAutosave = lastReport;
 			sendMessage("Saving the world to disk, just to be on the safe side.");

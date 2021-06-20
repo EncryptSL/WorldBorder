@@ -1,14 +1,15 @@
 package com.wimbli.WorldBorder;
 
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.Location;
 
 
 public class WBListener implements Listener
@@ -20,8 +21,11 @@ public class WBListener implements Listener
 		if (Config.KnockBack() == 0.0)
 			return;
 
+		if(event.getPlayer().isFlying() || event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+			return;
+
 		if (Config.Debug())
-			Config.log("Teleport cause: " + event.getCause().toString());
+			Config.log("Teleport cause: " + event.getCause());
 
 		Location newLoc = BorderCheckTask.checkPlayer(event.getPlayer(), event.getTo(), true, true);
 		if (newLoc != null)

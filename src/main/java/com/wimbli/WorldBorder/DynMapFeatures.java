@@ -1,19 +1,18 @@
 package com.wimbli.WorldBorder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.World;
-
+import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class DynMapFeatures
@@ -125,8 +124,8 @@ public class DynMapFeatures
 	 * Methods for displaying our borders on DynMap's world maps
 	 */
 
-    private static Map<String, CircleMarker> roundBorders = new HashMap<String, CircleMarker>();
-    private static Map<String, AreaMarker> squareBorders = new HashMap<String, AreaMarker>();
+    private static Map<String, CircleMarker> roundBorders = new HashMap<>();
+    private static Map<String, AreaMarker> squareBorders = new HashMap<>();
 
 	public static void showAllBorders()
 	{

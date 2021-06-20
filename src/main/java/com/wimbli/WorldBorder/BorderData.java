@@ -1,11 +1,11 @@
 package com.wimbli.WorldBorder;
 
-import java.util.EnumSet;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+
+import java.util.EnumSet;
 
 
 public class BorderData
@@ -168,7 +168,7 @@ public class BorderData
 	{
 		// if this border has a shape override set, use it
 		if (shapeRound != null)
-			round = shapeRound.booleanValue();
+			round = shapeRound;
 
 		// square border
 		if (!round)
@@ -212,7 +212,7 @@ public class BorderData
 	{
 		// if this border has a shape override set, use it
 		if (shapeRound != null)
-			round = shapeRound.booleanValue();
+			round = shapeRound;
 
 		double xLoc = loc.getX();
 		double zLoc = loc.getZ();
@@ -389,7 +389,7 @@ public class BorderData
 			safeOpenBlocks.add(Material.SPRUCE_SIGN);
 			safeOpenBlocks.add(Material.SPRUCE_WALL_SIGN);
 		}
-		catch (NoSuchFieldError ex) {}
+		catch (NoSuchFieldError ignored) {}
 	}
 
 	//these material IDs are ones we don't want to drop the player onto, like cactus or lava or fire or activated Ender portal

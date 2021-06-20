@@ -1,12 +1,14 @@
 package com.wimbli.WorldBorder.cmd;
 
-import java.util.List;
-
+import com.wimbli.WorldBorder.Config;
+import com.wimbli.WorldBorder.CoordXZ;
+import com.wimbli.WorldBorder.WorldBorder;
+import com.wimbli.WorldBorder.WorldFillTask;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.wimbli.WorldBorder.*;
+import java.util.List;
 
 
 public class CmdFill extends WBCmd

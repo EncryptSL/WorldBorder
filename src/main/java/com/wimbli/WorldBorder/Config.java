@@ -1,26 +1,18 @@
 package com.wimbli.WorldBorder;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
-import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Config
@@ -37,8 +29,8 @@ public class Config
 
 	// actual configuration values which can be changed
 	private static boolean shapeRound = true;
-	private static Map<String, BorderData> borders = Collections.synchronizedMap(new LinkedHashMap<String, BorderData>());
-	private static Set<UUID> bypassPlayers = Collections.synchronizedSet(new LinkedHashSet<UUID>());
+	private static final Map<String, BorderData> borders = Collections.synchronizedMap(new LinkedHashMap<>());
+	private static final Set<UUID> bypassPlayers = Collections.synchronizedSet(new LinkedHashSet<>());
 	private static String message;		// raw message without color code formatting
 	private static String messageFmt;	// message with color code formatting ("&" changed to funky sort-of-double-dollar-sign for legitimate color/formatting codes)
 	private static String messageClean;	// message cleaned of formatting codes
@@ -112,8 +104,8 @@ public class Config
 	{
 		double radiusX = Math.abs(x1 - x2) / 2;
 		double radiusZ = Math.abs(z1 - z2) / 2;
-		double x = ((x1 < x2) ? x1 : x2) + radiusX;
-		double z = ((z1 < z2) ? z1 : z2) + radiusZ;
+		double x = (Math.min(x1, x2)) + radiusX;
+		double z = (Math.min(z1, z2)) + radiusZ;
 		setBorder(world, new BorderData(x, z, (int)Math.round(radiusX), (int)Math.round(radiusZ), shapeRound, wrap), true);
 	}
 	public static void setBorderCorners(String world, double x1, double z1, double x2, double z2, Boolean shapeRound)
@@ -151,12 +143,12 @@ public class Config
 		if (border == null)
 			return "No border was found for the world \"" + world + "\".";
 		else
-			return "World \"" + world + "\" has border " + border.toString();
+			return "World \"" + world + "\" has border " + border;
 	}
 
 	public static Set<String> BorderDescriptions()
 	{
-		Set<String> output = new HashSet<String>();
+		Set<String> output = new HashSet<>();
 
 		for(String worldName : borders.keySet())
 		{
@@ -448,7 +440,7 @@ public class Config
 	}
 	private static ArrayList<String> exportBypassStringList()
 	{
-		ArrayList<String> strings = new ArrayList<String>();
+		ArrayList<String> strings = new ArrayList<>();
 		for (UUID uuid: bypassPlayers)
 		{
 			strings.add(uuid.toString());
@@ -611,7 +603,7 @@ public class Config
 		timerTicks = cfg.getInt("timer-delay-ticks", 5);
 		remountDelayTicks = cfg.getInt("remount-delay-ticks", 0);
 		dynmapEnable = cfg.getBoolean("dynmap-border-enabled", true);
-		dynmapMessage = cfg.getString("dynmap-border-message", "The border of the world.");
+		dynmapMessage = cfg.getString("dynmap-border-message", "Hranice světa.");
 		dynmapHideByDefault = cfg.getBoolean("dynmap-border-hideByDefault", false);
 		dynmapPriority = cfg.getInt("dynmap-border-priority", 0);
 		logConfig("Using " + (ShapeName()) + " border, knockback of " + knockBack + " blocks, and timer delay of " + timerTicks + ".");
@@ -637,7 +629,7 @@ public class Config
 			return;
 		}
 		// if loading older config which didn't support color codes in border message, make sure default red color code is added at start of it
-		else if (cfgVersion < 8 && !(msg.substring(0, 1).equals("&")))
+		else if (cfgVersion < 8 && msg.charAt(0) != '&')
 			updateMessage("&c" + msg);
 		// otherwise just set border message
 		else

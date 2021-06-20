@@ -1,11 +1,10 @@
 package com.wimbli.WorldBorder.cmd;
 
-import java.util.List;
-
-import org.bukkit.command.*;
+import com.wimbli.WorldBorder.Config;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.wimbli.WorldBorder.*;
+import java.util.List;
 
 
 public class CmdGetmsg extends WBCmd

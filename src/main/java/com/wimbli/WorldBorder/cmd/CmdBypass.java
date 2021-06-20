@@ -1,14 +1,14 @@
 package com.wimbli.WorldBorder.cmd;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.wimbli.WorldBorder.Config;
+import com.wimbli.WorldBorder.UUID.UUIDFetcher;
+import com.wimbli.WorldBorder.WorldBorder;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.wimbli.WorldBorder.*;
-import com.wimbli.WorldBorder.UUID.UUIDFetcher;
+import java.util.List;
+import java.util.UUID;
 
 
 public class CmdBypass extends WBCmd

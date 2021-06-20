@@ -4,6 +4,9 @@
 
 package com.wimbli.WorldBorder.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -16,17 +19,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 
 public class UUIDFetcher {
 	
 	/**
 	 * Date when name changes were introduced
-	 * @see UUIDFetcher#getUUIDAt(String, long)
+	 * @see UUIDFetcher#getUUID(String)
 	 */
-	public static final long FEBRUARY_2015 = 1422748800000L;
+	public static final long JUNE_2021 = 1623446060L;
 	
 	
 	private static Gson gson = new GsonBuilder().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).create();
@@ -34,8 +34,8 @@ public class UUIDFetcher {
 	private static final String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/%s?at=%d";
 	private static final String NAME_URL = "https://api.mojang.com/user/profiles/%s/names";
 
-	private static Map<String, UUID> uuidCache = new HashMap<String, UUID>();
-	private static Map<UUID, String> nameCache = new HashMap<UUID, String>();
+	private static Map<String, UUID> uuidCache = new HashMap<>();
+	private static Map<UUID, String> nameCache = new HashMap<>();
 
 	private static ExecutorService pool = Executors.newCachedThreadPool();
 	
@@ -59,34 +59,32 @@ public class UUIDFetcher {
 	 * @return The uuid
 	 */
 	public static UUID getUUID(String name) {
-		return getUUIDAt(name, System.currentTimeMillis());
+		return getUUID(name);
 	}
 	
 	/**
 	 * Fetches the uuid synchronously for a specified name and time and passes the result to the consumer
 	 * 
 	 * @param name The name
-	 * @param timestamp Time when the player had this name in milliseconds
 	 * @param action Do what you want to do with the uuid her
 	 */
-	public static void getUUIDAt(String name, long timestamp, Consumer<UUID> action) {
-		pool.execute(() -> action.accept(getUUIDAt(name, timestamp)));
+	public static void getUUIDFetch(String name, Consumer<UUID> action) {
+		pool.execute(() -> action.accept(getUUIDFetch(name)));
 	}
 	
 	/**
 	 * Fetches the uuid synchronously for a specified name and time
 	 * 
 	 * @param name The name
-	 * @param timestamp Time when the player had this name in milliseconds
-	 * @see UUIDFetcher#FEBRUARY_2015
+	 * @see UUIDFetcher#JUNE_2021
 	 */
-	public static UUID getUUIDAt(String name, long timestamp) {
+	public static UUID getUUIDFetch(String name) {
 		name = name.toLowerCase();
 		if (uuidCache.containsKey(name)) {
 			return uuidCache.get(name);
 		}
 		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(String.format(UUID_URL, name, timestamp/1000)).openConnection();
+			HttpURLConnection connection = (HttpURLConnection) new URL(String.format(UUID_URL, name)).openConnection();
 			connection.setReadTimeout(5000);
 			UUIDFetcher data = gson.fromJson(new BufferedReader(new InputStreamReader(connection.getInputStream())), UUIDFetcher.class);
 			

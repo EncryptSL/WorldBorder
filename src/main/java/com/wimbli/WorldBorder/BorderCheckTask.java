@@ -1,21 +1,16 @@
 package com.wimbli.WorldBorder;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableList;
-
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.Location;
 import org.bukkit.util.Vector;
-import org.bukkit.World;
+
+import java.util.*;
 
 
 public class BorderCheckTask implements Runnable
@@ -36,7 +31,7 @@ public class BorderCheckTask implements Runnable
 	}
 
 	// track players who are being handled (moved back inside the border) already; needed since Bukkit is sometimes sending teleport events with the old (now incorrect) location still indicated, which can lead to a loop when we then teleport them thinking they're outside the border, triggering event again, etc.
-	private static Set<String> handlingPlayers = Collections.synchronizedSet(new LinkedHashSet<String>());
+	private static final Set<String> handlingPlayers = Collections.synchronizedSet(new LinkedHashSet<String>());
 
 	// set targetLoc only if not current player location; set returnLocationOnly to true to have new Location returned if they need to be moved to one, instead of directly handling it
 	public static Location checkPlayer(Player player, Location targetLoc, boolean returnLocationOnly, boolean notify)
@@ -78,6 +73,7 @@ public class BorderCheckTask implements Runnable
 			if (ride != null)
 			{	// vehicles need to be offset vertically and have velocity stopped
 				double vertOffset = (ride instanceof LivingEntity) ? 0 : ride.getLocation().getY() - loc.getY();
+				assert newLoc != null;
 				Location rideLoc = newLoc.clone();
 				rideLoc.setY(newLoc.getY() + vertOffset);
 				if (Config.Debug())
@@ -112,8 +108,9 @@ public class BorderCheckTask implements Runnable
 		// give some particle and sound effects where the player was beyond the border, if "whoosh effect" is enabled
 		Config.showWhooshEffect(loc);
 
-		if (!returnLocationOnly)
+		if (!returnLocationOnly) {
 			player.teleport(newLoc, TeleportCause.PLUGIN);
+		}
 
 		if (!handlingVehicle)
 			handlingPlayers.remove(player.getName().toLowerCase());
